@@ -3,7 +3,7 @@ const app = express();
 const cors = require('cors');
 require('dotenv').config();
 const { MongoClient, ServerApiVersion } = require('mongodb');
-const port = 5000;
+const port = process.env.PORT || 5000;
 app.use(cors());
 app.use(express.json());
 
@@ -17,34 +17,34 @@ const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology:
 //getting data from database
 async function run() {
     try {
-      const destinationsCollection = client.db("trip-today");
-      const destinations = destinationsCollection.collection("destinations");
-      const signatureDestination=destinationsCollection.collection("signatureDestination")
+        const destinationsCollection = client.db("trip-today");
+        const destinations = destinationsCollection.collection("destinations");
+        const signatureDestination = destinationsCollection.collection("signatureDestination")
 
-        app.get('/destinations',async(req,res)=>{
+        app.get('/destinations', async (req, res) => {
 
-            const cursor=destinations.find({});
-            const result=await cursor.toArray();
+            const cursor = destinations.find({});
+            const result = await cursor.toArray();
             res.send(result);
         })
-        app.get('/signature-destination',async(req,res)=>{
-            const cursor=signatureDestination.find({});
-            const result=await cursor.toArray();
+        app.get('/signature-destination', async (req, res) => {
+            const cursor = signatureDestination.find({});
+            const result = await cursor.toArray();
             res.send(result);
         })
-       
-        app.post('/signature-destination',async(req,res)=>{
-           const newData=req.body;
-           const result=await signatureDestination.insertOne(newData);
-           res.json(result);
-         
+
+        app.post('/signature-destination', async (req, res) => {
+            const newData = req.body;
+            const result = await signatureDestination.insertOne(newData);
+            res.json(result);
+
         })
-      
+
     } finally {
-    //   await client.close();
+        //   await client.close();
     }
-  }
-  run().catch(console.dir);
+}
+run().catch(console.dir);
 
 app.get('/', (req, res) => {
     res.send('Getting started with node in trip today')
